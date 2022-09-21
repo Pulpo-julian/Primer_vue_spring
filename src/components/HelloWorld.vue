@@ -1,4 +1,13 @@
 <template>
+
+<li v-for="usuario in usuarios" v-bind:key="usuario.id">
+
+  {{usuario.nombres}}
+  {{usuario.apellidos}}
+
+</li>
+
+
   <div class="hello">
     <h1>{{ msg }}</h1>
     <p>
@@ -31,10 +40,39 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  data() {
+    return {
+      usuarios: []
+    };
+  },
+  async mounted() {
+    try {
+      var vue = this;
+      var result = await axios({
+        method: "GET",
+        url: "http://localhost:8093/index/usuarios",
+        data: {
+          query: `{
+            usuario {
+              id,
+              nombres,
+              apellidos
+            }
+          }`
+        }
+
+      });
+      vue.usuarios = result.data;
+      console.log(vue.usuarios);
+    } catch (err){
+      console.log(err);
+    } 
   }
 }
 </script>
